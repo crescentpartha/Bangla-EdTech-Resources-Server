@@ -28,6 +28,14 @@ async function run() {
             const comments = await cursor.toArray();
             res.send(comments);
         });
+
+        // POST a comment from server-side to database
+        app.post('/comment', async(req, res) => {
+            const newComment = req.body;
+            console.log('Adding a new comment', newComment);
+            const result = await commentCollection.insertOne(newComment);
+            res.send(result);
+        });
     }
     finally {
         // await client.close(); // commented, if I want to keep connection active;
