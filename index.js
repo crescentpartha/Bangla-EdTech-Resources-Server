@@ -21,7 +21,7 @@ async function run() {
         console.log('banglaEdTechResources database connected');
         const commentCollection = client.db('banglaEdTechResources').collection('comment');
 
-        // get all comments data from database
+        // 01. get all comments data from database
         app.get('/comment', async (req, res) => {
             const query = {};
             const cursor = commentCollection.find(query);
@@ -29,7 +29,19 @@ async function run() {
             res.send(comments);
         });
 
-        // POST a comment from server-side to database
+        // 03. get topic-wise comments data from database
+        app.get('/topic-wise-comment', async (req, res) => {
+            const comment = req.body;
+            const tutorial = comment?.tutorial || 'python';
+            const topic = comment?.topic || 'introduction';
+            console.log(tutorial, topic);
+            
+            const query = { tutorial: tutorial, topic: topic };
+            const comments = await commentCollection.find(query).toArray();
+            res.send(comments);
+        });
+
+        // 02. POST a comment from server-side to database
         app.post('/comment', async(req, res) => {
             const newComment = req.body;
             console.log('Adding a new comment', newComment);
