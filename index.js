@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -48,6 +48,24 @@ async function run() {
             const newComment = req.body;
             console.log('Adding a new comment', newComment);
             const result = await commentCollection.insertOne(newComment);
+            res.send(result);
+        });
+
+        // 04. Load a particular comment data from database - (id-wise)
+        app.get('/comment/:id', async(req, res) => {
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await commentCollection.findOne(query);
+            res.send(result);
+        });
+
+        // 05. DELETE a particular comment from server-side to database
+        app.delete('/topic-wise-comment/:id', async(req, res) => {
+            const id = req.params.id;
+            const comment = req.query;
+            const query = {tutorial: comment.tutorial, topic: comment.topic, _id: ObjectId(id)};
+            const result = await commentCollection.deleteOne(query);
+            console.log('One comment is deleted');
             res.send(result);
         });
     }
