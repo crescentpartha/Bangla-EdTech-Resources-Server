@@ -31,12 +31,14 @@ async function run() {
 
         // 03. get topic-wise comments data from database
         app.get('/topic-wise-comment', async (req, res) => {
-            const comment = req.body;
-            const tutorial = comment?.tutorial || 'python';
-            const topic = comment?.topic || 'introduction';
-            console.log(tutorial, topic);
+            const comment = req.query;
+            // console.log(comment);
             
-            const query = { tutorial: tutorial, topic: topic };
+            // const tutorial = comment?.tutorial || 'python';
+            // const topic = comment?.topic || 'introduction';
+            // console.log(tutorial, topic);
+            
+            const query = { tutorial: comment.tutorial, topic: comment.topic };
             const comments = await commentCollection.find(query).toArray();
             res.send(comments);
         });
