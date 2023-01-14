@@ -68,6 +68,22 @@ async function run() {
             console.log('One comment is deleted');
             res.send(result);
         });
+
+        // 06. Update a comment in server-side and send to the database
+        app.put('/comment/:id', async(req, res) => {
+            // const id = req.params.id;
+            const commentData = req.body;
+            const filter = {_id: ObjectId(commentData.id)};
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    comment: commentData.comment
+                }
+            };
+            const result = await commentCollection.updateOne(filter, updatedDoc, options);
+            console.log('Product is updated');
+            res.send(result);
+        });
     }
     finally {
         // await client.close(); // commented, if I want to keep connection active;
